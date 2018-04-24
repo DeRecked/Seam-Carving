@@ -17,8 +17,8 @@ int main(int argc, char** argv) {
 			image.open(filename.c_str(), std::ios::in, std::ios::binary);
 
 			filename.erase(filename.length() - 4, 4);
-			std::string filename_processed = filename + "_processed.pgm";
-			image_processed.open(filename_processed.c_str(), std::ios::out, std::ios::binary);
+			filename = filename + "_processed.pgm";
+			image_processed.open(filename.c_str(), std::ios::out, std::ios::binary);
 
 			if (!image.is_open())
 				throw "Could not open image file";
@@ -29,19 +29,12 @@ int main(int argc, char** argv) {
 	} catch (const char* err) {
 		std::cout << "The application threw an exception:" << err << std::endl;
 	}
-
-	int vertical_seams = atoi(argv[2]);
-	int horizontal_seams = atoi(argv[3]);
-
-	std::getline(image, header);
-	std::getline(image, xy);
 	
-	if (xy[0] == '#')
-		std::getline(image, xy);
-
-	std::getline(image, max_gray);
-
-	std::cout << header << "\n" << xy << "\n" << max_gray << std::endl;
+	ImageProcessor ip(atoi(argv[2]), atoi(argv[3]));
+	
+	ip.get_header(image);
+	ip.populate_image_matrix(image);
+	//ip.populate_energy_matrix();
 
 	return 0;
 }
