@@ -116,7 +116,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ImageProcessor.cpp" />
     <ClCompile Include="SeamCarving.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ImageProcessor.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
