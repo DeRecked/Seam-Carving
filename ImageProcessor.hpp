@@ -11,8 +11,8 @@ public:
 		: vertical_seams(vs), horizontal_seams(hs)
 	{ }
 
-	void get_header(std::fstream& image);
-	void populate_image_matrix(std::fstream& image);
+	void get_header(std::ifstream& image);
+	void populate_image_matrix(std::ifstream& image);
 	void populate_energy_matrix();
 	void populate_cumulative_matrix();
 	void remove_seams();

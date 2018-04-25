@@ -1,0 +1,3 @@
+/home/derrick/git-repos/seam-carving/build/CMakeFiles/rebuild_cache.dir
+/home/derrick/git-repos/seam-carving/build/CMakeFiles/edit_cache.dir
+/home/derrick/git-repos/seam-carving/build/CMakeFiles/seam-carving.dir

@@ -3,7 +3,7 @@
 #include <iostream>
 #include "ImageProcessor.hpp"
 
-void ImageProcessor::get_header(std::fstream& image) {	
+void ImageProcessor::get_header(std::ifstream& image) {	
 	std::string x, y;
 	
 	std::getline(image, header);
@@ -33,7 +33,7 @@ void ImageProcessor::get_header(std::fstream& image) {
 	std::cout << "x = " << x_dim << "\ny = " << y_dim << std::endl;
 }
 
-void ImageProcessor::populate_image_matrix(std::fstream& image) {
+void ImageProcessor::populate_image_matrix(std::ifstream& image) {
 	int y = 0;
 	int x = 0;
 	std::vector<int> temp_matrix;
