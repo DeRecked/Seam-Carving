@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 #include "ImageProcessor.hpp"
@@ -127,6 +128,53 @@ void ImageProcessor::populate_energy_matrix() {
 			else
 				energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x + 1][y])
 					+ abs(image_matrix[x][y] - image_matrix[x][y - 1]) + abs(image_matrix[x][y] - image_matrix[x][y + 1]);
+		}
+	}
+
+	for (int y = 1; y < y_dim; y++) {
+		std::cout << std::endl;
+		for (int x = 0; x < x_dim; x++) {
+			std::cout << energy_matrix[x][y] << " ";
+		}
+	}
+
+	std::cout << std::endl << std::endl;
+}
+
+void ImageProcessor::populate_cumulative_matrix() {
+
+	cumulative_matrix.resize(x_dim);
+	for (int x = 0; x < x_dim; x++)
+		cumulative_matrix[x].resize(y_dim);
+
+	// Copy top row of energy matrix to cumulative matrix
+	for (int x = 0; x < x_dim; x++)
+		cumulative_matrix[x][0] = energy_matrix[x][0];
+
+	for (int y = 1; y < y_dim; y++) {
+		for (int x = 0; x < x_dim; x++) {
+
+			// Left side
+			if (x == 0) {
+				cumulative_matrix[x][y] = energy_matrix[x][y] + std::min(energy_matrix[x][y-1], energy_matrix[x+1][y-1]);
+			}
+
+			// Right side
+			else if (x == x_dim - 1) {
+				cumulative_matrix[x][y] = energy_matrix[x][y] + std::min(energy_matrix[x][y-1], energy_matrix[x-1][y-1]);
+			}
+
+			// Everything else
+			else {
+				cumulative_matrix[x][y] = energy_matrix[x][y] + std::min(std::min(energy_matrix[x-1][y-1], energy_matrix[x][y-1]), energy_matrix[x+1][y-1]);
+			}
+		}
+	}
+
+	for (int y = 1; y < y_dim; y++) {
+		std::cout << std::endl;
+		for (int x = 0; x < x_dim; x++) {
+			std::cout << cumulative_matrix[x][y] << " ";
 		}
 	}
 }

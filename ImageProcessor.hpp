@@ -14,6 +14,7 @@ public:
 	void get_header(std::fstream& image);
 	void populate_image_matrix(std::fstream& image);
 	void populate_energy_matrix();
+	void populate_cumulative_matrix();
 	void remove_seams();
 
 private:
