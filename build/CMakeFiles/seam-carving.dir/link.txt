@@ -1,1 +1,0 @@
-/usr/bin/c++   -std=c++11   CMakeFiles/seam-carving.dir/SeamCarving.cpp.o CMakeFiles/seam-carving.dir/ImageProcessor.cpp.o  -o seam-carving -rdynamic 
