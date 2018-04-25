@@ -28,6 +28,9 @@ void ImageProcessor::get_header(std::fstream& image) {
 
 	x_dim = stoi(x);
 	y_dim = stoi(y);
+
+	std::cout << "Header: " << header << "\nDimensions: " << dimensions << "\nMax Gray: " << max_gray << std::endl;
+	std::cout << "x = " << x_dim << "\ny = " << y_dim << std::endl;
 }
 
 void ImageProcessor::populate_image_matrix(std::fstream& image) {
@@ -45,20 +48,17 @@ void ImageProcessor::populate_image_matrix(std::fstream& image) {
 		std::getline(image, line);
 		while (line[0] == '#')
 			std::getline(image, line);
-
+		std::cout << line << std::endl;
 		const char* chars = line.c_str();
 		for (int i = 0; i < line.length(); i++) {
 			std::string temp;
-
-			while (*chars == ' ' || *chars == '\t')
-				*chars++;
 
 			while (*chars != ' ' && *chars != '\t') {
 				temp += *chars++;
 				i++;
 			}
 			temp += *chars++;
-
+			std::cout << temp << std::endl;
 			temp_matrix.push_back(stoi(temp));
 		}
 	}
@@ -67,6 +67,15 @@ void ImageProcessor::populate_image_matrix(std::fstream& image) {
 	for (int i = 0; i < y_dim; i++)
 		for (int j = 0; j < x_dim; j++)
 			image_matrix[j][i] = temp_matrix.at(position++);
+
+	for (int y = 1; y < y_dim; y++) {
+		std::cout << std::endl;
+		for (int x = 0; x < x_dim; x++) {
+			std::cout << image_matrix[x][y] << " ";
+		}
+	}
+
+	std::cout << std::endl;
 }
 
 void ImageProcessor::populate_energy_matrix() {
@@ -138,7 +147,7 @@ void ImageProcessor::populate_energy_matrix() {
 		}
 	}
 
-	std::cout << std::endl << std::endl;
+	std::cout << std::endl;
 }
 
 void ImageProcessor::populate_cumulative_matrix() {
