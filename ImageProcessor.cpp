@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 #include "ImageProcessor.hpp"
 
@@ -34,8 +35,8 @@ void ImageProcessor::populate_image_matrix(std::fstream& image) {
 	std::vector<int> temp_matrix;
 
 	image_matrix.resize(x_dim);
-	for (int i = 0; i < x_dim; i++)
-		image_matrix[i].resize(y_dim);
+	for (int x = 0; x < x_dim; x++)
+		image_matrix[x].resize(y_dim);
 
 	while (!image.eof()) {
 		std::string line;
@@ -61,14 +62,73 @@ void ImageProcessor::populate_image_matrix(std::fstream& image) {
 		}
 	}
 
-	for (int i = 0; i < temp_matrix.size(); i++)
-		std::cout << temp_matrix[i] << std::endl;
-
-
+	int position = 0;
+	for (int i = 0; i < y_dim; i++)
+		for (int j = 0; j < x_dim; j++)
+			image_matrix[j][i] = temp_matrix.at(position++);
 }
 
 void ImageProcessor::populate_energy_matrix() {
 
+	energy_matrix.resize(x_dim);
+	for (int x = 0; x < x_dim; x++)
+		energy_matrix[x].resize(y_dim);
+
+	for (int y = 0; y < y_dim; y++) {
+		for (int x = 0; x < x_dim; x++) {
+			
+			// Top
+			if (y == 0) {
+				// Top left
+				if (x == 0 && y == 0)
+					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x + 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y + 1]);
+
+				// Top right
+				else if (x == x_dim - 1 && y == 0)
+					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y + 1]);
+
+				// Otherwise
+				else
+					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x + 1][y])
+						+ abs(image_matrix[x][y] - image_matrix[x][y + 1]);
+			}
+
+			// Bottom
+			else if (y == y_dim - 1) {
+				// Bottom left
+				if (x == 0 && y == y_dim - 1)
+					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x + 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y - 1]);
+
+				// Bottom right
+				else if (x == x_dim - 1 && y == y_dim - 1)
+					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y - 1]);
+
+				// Otherwise
+				else
+					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x + 1][y])
+						+ abs(image_matrix[x][y] - image_matrix[x][y - 1]);
+			}
+
+			// Sides
+			else if (x == 0 || x == x_dim - 1) {
+
+				// Left Side
+				if (x == 0)
+					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x + 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y - 1])
+						+ abs(image_matrix[x][y] - image_matrix[x][y + 1]);
+
+				// Right Side
+				else if (x == x_dim - 1)
+					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y - 1])
+						+ abs(image_matrix[x][y] - image_matrix[x][y + 1]);
+			}
+
+			// Everything else
+			else
+				energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x + 1][y])
+					+ abs(image_matrix[x][y] - image_matrix[x][y - 1]) + abs(image_matrix[x][y] - image_matrix[x][y + 1]);
+		}
+	}
 }
 
 void ImageProcessor::remove_seams() {

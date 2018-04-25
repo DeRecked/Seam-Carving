@@ -1,7 +1,4 @@
-#include <fstream>
 #include <iostream>
-#include <string>
-
 #include "ImageProcessor.hpp"
 
 int main(int argc, char** argv) {
@@ -34,7 +31,8 @@ int main(int argc, char** argv) {
 	
 	ip.get_header(image);
 	ip.populate_image_matrix(image);
-	//ip.populate_energy_matrix();
+	ip.populate_energy_matrix();
+	//ip.remove_seams();
 
 	return 0;
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <fstream>
 #include <iosfwd>
 #include <string>
@@ -17,7 +18,8 @@ public:
 
 private:
 	std::vector<std::vector<int>> image_matrix;
-	std::vector<int> energy_matrix;
+	std::vector<std::vector<int>> energy_matrix;
+	std::vector<std::vector<int>> cumulative_matrix;
 	std::string header, dimensions, max_gray;
 	int	vertical_seams, horizontal_seams, x_dim, y_dim;
 };
