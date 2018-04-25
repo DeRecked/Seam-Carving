@@ -34,48 +34,38 @@ void ImageProcessor::get_header(std::ifstream& image) {
 }
 
 void ImageProcessor::populate_image_matrix(std::ifstream& image) {
-	int y = 0;
-	int x = 0;
 	std::vector<int> temp_matrix;
+	std::string line;
+	std::string temp;
 
 	image_matrix.resize(x_dim);
 	for (int x = 0; x < x_dim; x++)
 		image_matrix[x].resize(y_dim);
 
 	while (!image.eof()) {
-		std::string line;
 
 		std::getline(image, line);
 		while (line[0] == '#')
 			std::getline(image, line);
-		std::cout << line << std::endl;
+
 		const char* chars = line.c_str();
 		for (int i = 0; i < line.length(); i++) {
-			std::string temp;
 
 			while (*chars != ' ' && *chars != '\t') {
 				temp += *chars++;
 				i++;
 			}
 			temp += *chars++;
-			std::cout << temp << std::endl;
 			temp_matrix.push_back(stoi(temp));
+			temp.clear();
 		}
+		line.clear();
 	}
 
 	int position = 0;
-	for (int i = 0; i < y_dim; i++)
-		for (int j = 0; j < x_dim; j++)
-			image_matrix[j][i] = temp_matrix.at(position++);
-
-	for (int y = 1; y < y_dim; y++) {
-		std::cout << std::endl;
-		for (int x = 0; x < x_dim; x++) {
-			std::cout << image_matrix[x][y] << " ";
-		}
-	}
-
-	std::cout << std::endl;
+	for (int y = 0; y < y_dim; y++)
+		for (int x = 0; x < x_dim; x++)
+			image_matrix[x][y] = temp_matrix.at(position++);
 }
 
 void ImageProcessor::populate_energy_matrix() {
@@ -139,15 +129,6 @@ void ImageProcessor::populate_energy_matrix() {
 					+ abs(image_matrix[x][y] - image_matrix[x][y - 1]) + abs(image_matrix[x][y] - image_matrix[x][y + 1]);
 		}
 	}
-
-	for (int y = 1; y < y_dim; y++) {
-		std::cout << std::endl;
-		for (int x = 0; x < x_dim; x++) {
-			std::cout << energy_matrix[x][y] << " ";
-		}
-	}
-
-	std::cout << std::endl;
 }
 
 void ImageProcessor::populate_cumulative_matrix() {
@@ -177,13 +158,6 @@ void ImageProcessor::populate_cumulative_matrix() {
 			else {
 				cumulative_matrix[x][y] = energy_matrix[x][y] + std::min(std::min(energy_matrix[x-1][y-1], energy_matrix[x][y-1]), energy_matrix[x+1][y-1]);
 			}
-		}
-	}
-
-	for (int y = 1; y < y_dim; y++) {
-		std::cout << std::endl;
-		for (int x = 0; x < x_dim; x++) {
-			std::cout << cumulative_matrix[x][y] << " ";
 		}
 	}
 }

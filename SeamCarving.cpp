@@ -12,11 +12,11 @@ int main(int argc, char** argv) {
 		else {
 
 			std::string filename = argv[1];
-			image.open(filename.c_str(), std::ios::binary);
+			image.open(filename.c_str(), std::ios::in, std::ios::binary);
 
 			filename.erase(filename.length() - 4, 4);
 			filename = filename + "_processed.pgm";
-			image_processed.open(filename.c_str(), std::ios::binary);
+			image_processed.open(filename.c_str(), std::ios::out, std::ios::binary);
 
 			if (!image.is_open())
 				throw "Could not open image file";
