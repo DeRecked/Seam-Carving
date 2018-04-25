@@ -22,5 +22,5 @@ private:
 	std::vector<std::vector<int>> energy_matrix;
 	std::vector<std::vector<int>> cumulative_matrix;
 	std::string header, dimensions, max_gray;
-	int	vertical_seams, horizontal_seams, x_dim, y_dim;
+	int	vertical_seams, horizontal_seams, columns, rows;
 };
