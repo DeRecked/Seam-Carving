@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 	ip.populate_image_matrix(image);
 	ip.populate_energy_matrix();
 	ip.populate_cumulative_matrix();
-	//ip.remove_seams();
+	ip.remove_seams();
 
 	return 0;
 }

@@ -28,9 +28,6 @@ void ImageProcessor::get_header(std::ifstream& image) {
 
 	x_dim = stoi(x);
 	y_dim = stoi(y);
-
-	std::cout << "Header: " << header << "\nDimensions: " << dimensions << "\nMax Gray: " << max_gray << std::endl;
-	std::cout << "x = " << x_dim << "\ny = " << y_dim << std::endl;
 }
 
 void ImageProcessor::populate_image_matrix(std::ifstream& image) {
@@ -163,5 +160,33 @@ void ImageProcessor::populate_cumulative_matrix() {
 }
 
 void ImageProcessor::remove_seams() {
+	
+	for (int y = 0; y < y_dim; y++) {
+		std::cout << std::endl;
+		for (int x = 0; x < x_dim; x++)
+			std::cout << cumulative_matrix[x][y] << " ";
+	}
+	std::cout << std::endl;
+
+	std::vector<std::vector<int>>::iterator it;
+	int* vertical_path = new int[y_dim];
+	int* horizontal_path = new int[x_dim];
+	int min_value = 9999999;
+	int x_val;
+
+	for (int x = 0; x < x_dim; x++) {
+		if (cumulative_matrix[x][0] < min_value) {
+			min_value = cumulative_matrix[x][0];
+			x_val = x;
+		}
+	}
+
+
+	for (int y = 0; y < y_dim; y++) {
+		std::cout << std::endl;
+		for (int x = 0; x < x_dim; x++)
+			std::cout << cumulative_matrix[x][y] << " ";
+	}
+	std::cout << std::endl;
 
 }
