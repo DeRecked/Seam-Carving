@@ -30,11 +30,15 @@ int main(int argc, char** argv) {
 		std::cout << "The application threw an exception: " << err << std::endl;
 	}
 	
-	SeamCarving sc(atoi(argv[2]), atoi(argv[3]));
+	SeamCarving sc;
 	sc.get_header(image);
 	sc.populate_pixel_matrix(image);
-	sc.remove_vertical_seams();
-	sc.remove_horizontal_seams();
+	sc.remove_vertical_seams(atoi(argv[2]));
+	sc.remove_horizontal_seams(atoi(argv[3]));
+	sc.write_file(image_processed);
+
+	image.close();
+	image_processed.close();
 
 	return 0;
 }
