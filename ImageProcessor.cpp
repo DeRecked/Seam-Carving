@@ -58,13 +58,11 @@ void ImageProcessor::populate_image_matrix(std::ifstream& image) {
 	}
 
 	std::vector<int>::iterator it = temp_vector.begin();
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (int y = 0; y < height; y++) 
+		for (int x = 0; x < width; x++)
 			image_matrix[x][y] = *it++;
-			std::cout << image_matrix[x][y] << " ";
-		}
-		std::cout << std::endl;
-	}
+
+	print(image_matrix);
 }
 
 void ImageProcessor::populate_energy_matrix() {
@@ -182,17 +180,16 @@ void ImageProcessor::remove_seams() {
 			x_val = x;
 		}
 	}
-
-
-	for (int y = 0; y < height; y++) {
-		std::cout << std::endl;
-		for (int x = 0; x < width; x++)
-			std::cout << cumulative_matrix[x][y] << " ";
-	}
-	std::cout << std::endl;
-
 }
 
 void ImageProcessor::resize() {
 
+}
+
+void ImageProcessor::print(std::vector<std::vector<int>> matrix) {
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++)
+			std::cout << matrix[y][x] << " ";
+		std::cout << std::endl;
+	}
 }

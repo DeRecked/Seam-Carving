@@ -17,6 +17,7 @@ public:
 	void populate_cumulative_matrix();
 	void remove_seams();
 	void resize();
+	void print(std::vector<std::vector<int>> matrix);
 
 private:
 	std::vector<std::vector<int>> image_matrix;
