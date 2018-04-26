@@ -31,12 +31,10 @@ int main(int argc, char** argv) {
 	}
 	
 	SeamCarving sc(atoi(argv[2]), atoi(argv[3]));
-	
 	sc.get_header(image);
 	sc.populate_pixel_matrix(image);
-	sc.populate_energy_matrix();
-	sc.populate_cumulative_matrix();
-	//sc.remove_seams();
+	sc.remove_vertical_seams();
+	sc.remove_horizontal_seams();
 
 	return 0;
 }
