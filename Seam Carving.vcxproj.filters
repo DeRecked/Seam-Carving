@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SeamCarving.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImageProcessor.cpp">
+    <ClCompile Include="SeamCarving.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ImageProcessor.hpp">
+    <ClInclude Include="SeamCarving.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

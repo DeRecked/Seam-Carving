@@ -5,22 +5,23 @@
 #include <string>
 #include <vector>
 
-class ImageProcessor {
+class SeamCarving {
 public:
-	ImageProcessor(int vs, int hs)
+	SeamCarving(int vs, int hs)
 		: vertical_seams(vs), horizontal_seams(hs)
 	{ }
 
+	void print(std::vector<std::vector<int>> matrix);
 	void get_header(std::ifstream& image);
-	void populate_image_matrix(std::ifstream& image);
+	void populate_pixel_matrix(std::ifstream& image);
 	void populate_energy_matrix();
 	void populate_cumulative_matrix();
 	void remove_seams();
 	void resize();
-	void print(std::vector<std::vector<int>> matrix);
+	std::vector<std::vector<int>> get_output();
 
 private:
-	std::vector<std::vector<int>> image_matrix;
+	std::vector<std::vector<int>> pixel_matrix;
 	std::vector<std::vector<int>> energy_matrix;
 	std::vector<std::vector<int>> cumulative_matrix;
 	std::string header, dimensions, max_gray;
