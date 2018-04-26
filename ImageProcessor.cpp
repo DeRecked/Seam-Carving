@@ -26,16 +26,16 @@ void ImageProcessor::get_header(std::ifstream& image) {
 	for (int i = dimensions.size() - x.size()-1; i < dimensions.size(); i++)
 		y += *chars++;
 
-	columns = stoi(x);
-	rows = stoi(y);
+	width = stoi(x);
+	height = stoi(y);
 }
 
 void ImageProcessor::populate_image_matrix(std::ifstream& image) {
 	std::vector<int> temp_vector;
 
-	image_matrix.resize(columns);
-	for (int i = 0; i < columns; i++)
-		image_matrix[i].resize(rows);
+	image_matrix.resize(width);
+	for (int i = 0; i < width; i++)
+		image_matrix[i].resize(height);
 
 	while (!image.eof()) {
 		std::string line;
@@ -58,8 +58,8 @@ void ImageProcessor::populate_image_matrix(std::ifstream& image) {
 	}
 
 	std::vector<int>::iterator it = temp_vector.begin();
-	for (int y = 0; y < rows; y++) {
-		for (int x = 0; x < columns; x++) {
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
 			image_matrix[x][y] = *it++;
 			std::cout << image_matrix[x][y] << " ";
 		}
@@ -69,12 +69,12 @@ void ImageProcessor::populate_image_matrix(std::ifstream& image) {
 
 void ImageProcessor::populate_energy_matrix() {
 
-	energy_matrix.resize(columns);
-	for (int x = 0; x < columns; x++)
-		energy_matrix[x].resize(rows);
+	energy_matrix.resize(width);
+	for (int x = 0; x < width; x++)
+		energy_matrix[x].resize(height);
 
-	for (int y = 0; y < rows; y++) {
-		for (int x = 0; x < columns; x++) {
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
 			
 			// Top
 			if (y == 0) {
@@ -83,7 +83,7 @@ void ImageProcessor::populate_energy_matrix() {
 					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x + 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y + 1]);
 
 				// Top right
-				else if (x == columns - 1 && y == 0)
+				else if (x == width - 1 && y == 0)
 					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y + 1]);
 
 				// Otherwise
@@ -93,13 +93,13 @@ void ImageProcessor::populate_energy_matrix() {
 			}
 
 			// Bottom
-			else if (y == rows - 1) {
+			else if (y == height - 1) {
 				// Bottom left
-				if (x == 0 && y == rows - 1)
+				if (x == 0 && y == height - 1)
 					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x + 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y - 1]);
 
 				// Bottom right
-				else if (x == columns - 1 && y == rows - 1)
+				else if (x == width - 1 && y == height - 1)
 					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y - 1]);
 
 				// Otherwise
@@ -109,7 +109,7 @@ void ImageProcessor::populate_energy_matrix() {
 			}
 
 			// Sides
-			else if (x == 0 || x == columns - 1) {
+			else if (x == 0 || x == width - 1) {
 
 				// Left Side
 				if (x == 0)
@@ -117,7 +117,7 @@ void ImageProcessor::populate_energy_matrix() {
 						+ abs(image_matrix[x][y] - image_matrix[x][y + 1]);
 
 				// Right Side
-				else if (x == columns - 1)
+				else if (x == width - 1)
 					energy_matrix[x][y] = abs(image_matrix[x][y] - image_matrix[x - 1][y]) + abs(image_matrix[x][y] - image_matrix[x][y - 1])
 						+ abs(image_matrix[x][y] - image_matrix[x][y + 1]);
 			}
@@ -132,16 +132,16 @@ void ImageProcessor::populate_energy_matrix() {
 
 void ImageProcessor::populate_cumulative_matrix() {
 
-	cumulative_matrix.resize(columns);
-	for (int x = 0; x < columns; x++)
-		cumulative_matrix[x].resize(rows);
+	cumulative_matrix.resize(width);
+	for (int x = 0; x < width; x++)
+		cumulative_matrix[x].resize(height);
 
 	// Copy top row of energy matrix to cumulative matrix
-	for (int x = 0; x < columns; x++)
+	for (int x = 0; x < width; x++)
 		cumulative_matrix[x][0] = energy_matrix[x][0];
 
-	for (int y = 1; y < rows; y++) {
-		for (int x = 0; x < columns; x++) {
+	for (int y = 1; y < height; y++) {
+		for (int x = 0; x < width; x++) {
 
 			// Left side
 			if (x == 0) {
@@ -149,7 +149,7 @@ void ImageProcessor::populate_cumulative_matrix() {
 			}
 
 			// Right side
-			else if (x == columns - 1) {
+			else if (x == width - 1) {
 				cumulative_matrix[x][y] = energy_matrix[x][y] + std::min(energy_matrix[x][y-1], energy_matrix[x-1][y-1]);
 			}
 
@@ -163,20 +163,20 @@ void ImageProcessor::populate_cumulative_matrix() {
 
 void ImageProcessor::remove_seams() {
 	
-	for (int y = 0; y < rows; y++) {
+	for (int y = 0; y < height; y++) {
 		std::cout << std::endl;
-		for (int x = 0; x < columns; x++)
+		for (int x = 0; x < width; x++)
 			std::cout << cumulative_matrix[x][y] << " ";
 	}
 	std::cout << std::endl;
 
 	std::vector<std::vector<int>>::iterator it;
-	int* vertical_path = new int[rows];
-	int* horizontal_path = new int[columns];
+	int* vertical_path = new int[height];
+	int* horizontal_path = new int[width];
 	int min_value = 9999999;
 	int x_val;
 
-	for (int x = 0; x < columns; x++) {
+	for (int x = 0; x < width; x++) {
 		if (cumulative_matrix[x][0] < min_value) {
 			min_value = cumulative_matrix[x][0];
 			x_val = x;
@@ -184,11 +184,15 @@ void ImageProcessor::remove_seams() {
 	}
 
 
-	for (int y = 0; y < rows; y++) {
+	for (int y = 0; y < height; y++) {
 		std::cout << std::endl;
-		for (int x = 0; x < columns; x++)
+		for (int x = 0; x < width; x++)
 			std::cout << cumulative_matrix[x][y] << " ";
 	}
 	std::cout << std::endl;
+
+}
+
+void ImageProcessor::resize() {
 
 }

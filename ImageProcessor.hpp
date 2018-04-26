@@ -16,11 +16,12 @@ public:
 	void populate_energy_matrix();
 	void populate_cumulative_matrix();
 	void remove_seams();
+	void resize();
 
 private:
 	std::vector<std::vector<int>> image_matrix;
 	std::vector<std::vector<int>> energy_matrix;
 	std::vector<std::vector<int>> cumulative_matrix;
 	std::string header, dimensions, max_gray;
-	int	vertical_seams, horizontal_seams, columns, rows;
+	int	vertical_seams, horizontal_seams, width, height;
 };
