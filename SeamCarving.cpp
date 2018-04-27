@@ -3,33 +3,42 @@
 #include <iostream>
 #include "SeamCarving.hpp"
 
+// Read in header information
 void SeamCarving::get_header(std::ifstream& image) {	
 	std::string x, y;
 	
+	// Read in header
 	std::getline(image, header);
-	while (header[0] == '#')
+	while (header[0] == '#')			// While line is a comment, keep reading
 		std::getline(image, header);
 
+	// Read in pixel dimensions
 	std::getline(image, dimensions);
 	while (dimensions[0] == '#')
 		std::getline(image, dimensions);
 
+	// Read in max gray value
 	std::getline(image, max_gray);
 	while (max_gray[0] == '#')
 		std::getline(image, max_gray);
 
+	// char pointer to iterate through dimensions
 	const char* chars = dimensions.c_str();
-
+	
+	// Get x dimension
 	while (*chars != ' ')
 		x += *chars++;
 
-	for (auto i = dimensions.size() - x.size()-1; i < dimensions.size(); i++)
+	// Get y dimension
+	for (int i = dimensions.size() - x.size()-1; i < dimensions.size(); i++)
 		y += *chars++;
 
+	// Store
 	width = stoi(x);
 	height = stoi(y);
 }
 
+// Read pixels into matrix (vector of vectors)
 void SeamCarving::populate_pixel_matrix(std::ifstream& image) {
 	// Resize vector
 	pixel_matrix.resize(height);
@@ -42,7 +51,10 @@ void SeamCarving::populate_pixel_matrix(std::ifstream& image) {
 			image >> pixel_matrix[y][x];
 }
 
+// Calculate and fill energy matrix
 void SeamCarving::populate_energy_matrix() {
+	
+	// Resize matrix
 	energy_matrix.resize(height);
 	for (int i = 0; i < height; i++)
 		energy_matrix[i].resize(width);
@@ -104,6 +116,7 @@ void SeamCarving::populate_energy_matrix() {
 	}
 }
 
+// Calculate shortest paths
 void SeamCarving::populate_cumulative_vertical() {
 	cumulative_matrix.clear();
 	cumulative_matrix.resize(height);
@@ -135,11 +148,14 @@ void SeamCarving::populate_cumulative_vertical() {
 	}
 }
 
+// Find shortest path thorough cumulative matrix
 void SeamCarving::find_vertical_seams() { 
 	std::vector<int>::iterator it;
 	
+	// Clear map used to hold path
 	position.clear();
 
+	// Find location of smallest value in last row
 	it = std::min_element(cumulative_matrix[height - 1].begin(), cumulative_matrix[height - 1].end());
 	position[height-1] = std::distance(std::begin(cumulative_matrix[height - 1]), it);
 
@@ -170,13 +186,16 @@ void SeamCarving::find_vertical_seams() {
 	}
 }
 
+// Remove vertical seams
 void SeamCarving::remove_vertical_seams(int vertical_seams) {
 	
+	// Loop for each seam
 	while (vertical_seams > 0) {
-		populate_energy_matrix();
-		populate_cumulative_vertical();
-		find_vertical_seams();
+		populate_energy_matrix();		// Calculate energy matrix
+		populate_cumulative_vertical(); // Calculate cumulative matrix
+		find_vertical_seams();			// Find shortest path
 		
+		// Remove path from pixel matrix
 		for (auto i : position)
 			pixel_matrix[i.first].erase(pixel_matrix[i.first].begin() + i.second);
 
@@ -185,7 +204,10 @@ void SeamCarving::remove_vertical_seams(int vertical_seams) {
 	}
 }
 
+// Populate cumulative matrix for horizontal seams
 void SeamCarving::populate_cumulative_horizontal() {
+	
+	// Reisze matrix
 	cumulative_matrix.clear();
 	cumulative_matrix.resize(height);
 	for (int i = 0; i < height; i++)
@@ -216,9 +238,13 @@ void SeamCarving::populate_cumulative_horizontal() {
 	}
 }
 
+// Rotate matrix in order to calcualte horizontal shortest paths
 void SeamCarving::rotate(int a) {	
 
+	// Rotate 90 degrees clockwise
 	if (a == 0) {
+
+		// Resize
 		cumulative_rotated.resize(width);
 		pixel_rotated.resize(width);
 		for (int i = 0; i < width; i++) {
@@ -226,6 +252,7 @@ void SeamCarving::rotate(int a) {
 			pixel_rotated[i].resize(height);
 		}
 
+		// Rotate
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
 				cumulative_rotated[i][j] = cumulative_matrix[height - 1 - j][i];
@@ -233,26 +260,33 @@ void SeamCarving::rotate(int a) {
 			}
 	}
 
+	// Rotate 90 degress counter-clockwise
 	else if (a == 1) {
+		
+		// Resize
 		pixel_matrix.clear();
 		pixel_matrix.resize(height);
 
 		for (int i = 0; i < height; i++)
 			pixel_matrix[i].resize(width);
 
+		// Rotate
 		for (int i = 0; i < height; i++)
 			for (int j = 0; j < width; j++)
 				pixel_matrix[i][j] = pixel_rotated[j][height - 1 - i];
 	}
-
+	// This should never happen
 	else std::cout << "This should not happen" << std::endl;
 }
 
+// Locate shortest path
 void SeamCarving::find_horizontal_seams() {
 	std::vector<int>::iterator it;
 
+	// Clear map
 	position.clear();
 
+	// Find bottom row min
 	it = std::min_element(cumulative_rotated[width - 1].begin(), cumulative_rotated[width - 1].end());
 	position[width - 1] = std::distance(std::begin(cumulative_rotated[width - 1]), it);
 
@@ -283,6 +317,7 @@ void SeamCarving::find_horizontal_seams() {
 	}
 }
 
+// Remove horzontal seams
 void SeamCarving::remove_horizontal_seams(int horizontal_seams) {
 
 	while (horizontal_seams > 0) {
@@ -301,6 +336,7 @@ void SeamCarving::remove_horizontal_seams(int horizontal_seams) {
 	}
 }
 
+// Write back to file
 void SeamCarving::write_file(std::ofstream& output) {
 	std::vector<std::vector<int>>::iterator row;
 	std::vector<int>::iterator column;

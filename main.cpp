@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
 		std::cout << "The application threw an exception: " << err << std::endl;
 	}
 
-	std::cout << "Removing " << v_seams << " vertical and " << h_seams << " horizontal seams" << std::endl;
+	std::cout << "Removing " << v_seams << " vertical and " << h_seams << " horizontal seam(s)" << std::endl;
 	
 	SeamCarving sc;								// Create seam carving object
 	sc.get_header(image);						// Read in header info
