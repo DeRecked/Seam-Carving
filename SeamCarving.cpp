@@ -102,18 +102,10 @@ void SeamCarving::populate_energy_matrix() {
 					+ abs(pixel_matrix[y][x] - pixel_matrix[y - 1][x]) + abs(pixel_matrix[y][x] - pixel_matrix[y + 1][x]);
 		}
 	}
-
-	std::cout << "energy matrix" << std::endl;
-	for (int row = 0; row < height; row++) {
-		for (int column = 0; column < width; column++) {
-			std::cout << energy_matrix[row][column] << " ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
 }
 
 void SeamCarving::populate_cumulative_vertical() {
+	cumulative_matrix.clear();
 	cumulative_matrix.resize(height);
 	for (int i = 0; i < height; i++)
 		cumulative_matrix[i].resize(width);
@@ -141,15 +133,6 @@ void SeamCarving::populate_cumulative_vertical() {
 			}
 		}
 	}
-
-	std::cout << "cumulative matrix" << std::endl;
-	for (int row = 0; row < height; row++) {
-		for (int column = 0; column < width; column++) {
-			std::cout << cumulative_matrix[row][column] << " ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
 }
 
 void SeamCarving::find_vertical_seams() { 
@@ -160,16 +143,11 @@ void SeamCarving::find_vertical_seams() {
 	it = std::min_element(cumulative_matrix[height - 1].begin(), cumulative_matrix[height - 1].end());
 	position[height-1] = std::distance(std::begin(cumulative_matrix[height - 1]), it);
 
-	std::cout << "test: " << std::distance(std::begin(cumulative_matrix[height - 1]), it) << std::endl;
-
 	for (int row = height - 1; row > 0; row--) {
 		// Left side
 		if (position[row] == 0) {
 			it = std::min_element(cumulative_matrix[row - 1].begin(), cumulative_matrix[row - 1].begin() + 2);
 			position[row - 1] = std::distance(std::begin(cumulative_matrix[row - 1]), it);
-			
-			std::cout << "position[" << row - 1 << "] = " << position[row - 1] << std::endl;
-			std::cout << "test in for loop: " << *it << std::endl;
 		}
 
 		// Right side
@@ -190,12 +168,6 @@ void SeamCarving::find_vertical_seams() {
 			position[row - 1] = std::distance(std::begin(cumulative_matrix[row - 1]), it);
 		}
 	}
-
-	std::cout << "shortest path" << std::endl;
-	for (auto i : position) {
-		std::cout << i.first << "," << i.second << std::endl;
-	}
-	std::cout << std::endl;
 }
 
 void SeamCarving::remove_vertical_seams(int vertical_seams) {
@@ -205,26 +177,16 @@ void SeamCarving::remove_vertical_seams(int vertical_seams) {
 		populate_cumulative_vertical();
 		find_vertical_seams();
 		
-		for (auto i : position) {
+		for (auto i : position)
 			pixel_matrix[i.first].erase(pixel_matrix[i.first].begin() + i.second);
-			cumulative_matrix[i.first].erase(cumulative_matrix[i.first].begin() + i.second);
-		}
 
 		width--;
 		vertical_seams--;
 	}
-
-	std::cout << "final pixel matrix" << std::endl;
-	for (int row = 0; row < height; row++) {
-		for (int column = 0; column < width; column++) {
-			std::cout << pixel_matrix[row][column] << " ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
 }
 
 void SeamCarving::populate_cumulative_horizontal() {
+	cumulative_matrix.clear();
 	cumulative_matrix.resize(height);
 	for (int i = 0; i < height; i++)
 		cumulative_matrix[i].resize(width);
@@ -252,15 +214,6 @@ void SeamCarving::populate_cumulative_horizontal() {
 			}
 		}
 	}
-
-	std::cout << "cumulative matrix" << std::endl;
-	for (int row = 0; row < height; row++) {
-		for (int column = 0; column < width; column++) {
-			std::cout << cumulative_matrix[row][column] << " ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
 }
 
 void SeamCarving::rotate(int a) {	
@@ -280,24 +233,19 @@ void SeamCarving::rotate(int a) {
 			}
 	}
 
-	if (a == 1) {
-		cumulative_matrix.clear();
-		cumulative_matrix.resize(height);
-
+	else if (a == 1) {
 		pixel_matrix.clear();
 		pixel_matrix.resize(height);
 
-		for (int i = 0; i < height; i++) {
-			cumulative_matrix[i].resize(width);
+		for (int i = 0; i < height; i++)
 			pixel_matrix[i].resize(width);
-		}
 
 		for (int i = 0; i < height; i++)
-			for (int j = 0; j < width; j++) {
-				cumulative_matrix[i][j] = cumulative_rotated[j][height - 1 - i];
+			for (int j = 0; j < width; j++)
 				pixel_matrix[i][j] = pixel_rotated[j][height - 1 - i];
-			}
 	}
+
+	else std::cout << "This should not happen" << std::endl;
 }
 
 void SeamCarving::find_horizontal_seams() {
@@ -308,26 +256,21 @@ void SeamCarving::find_horizontal_seams() {
 	it = std::min_element(cumulative_rotated[width - 1].begin(), cumulative_rotated[width - 1].end());
 	position[width - 1] = std::distance(std::begin(cumulative_rotated[width - 1]), it);
 
-	std::cout << "test: " << std::distance(std::begin(cumulative_rotated[width - 1]), it) << std::endl;
-
 	for (int row = width - 1; row > 0; row--) {
 		// Left side
 		if (position[row] == 0) {
 			it = std::min_element(cumulative_rotated[row - 1].begin(), cumulative_rotated[row - 1].begin() + 2);
 			position[row - 1] = std::distance(std::begin(cumulative_rotated[row - 1]), it);
-
-			std::cout << "position[" << row - 1 << "] = " << position[row - 1] << std::endl;
-			std::cout << "test in for loop: " << *it << std::endl;
 		}
 
 		// Right side
-		else if (position[row] == width - 1) {
+		else if (position[row] == height - 1) {
 			it = std::min_element(cumulative_rotated[row - 1].end() - 2, cumulative_rotated[row - 1].end());
 			position[row - 1] = std::distance(std::begin(cumulative_rotated[row - 1]), it);
 		}
 
 		// Special case
-		else if (width <= 3) {
+		else if (height <= 3) {
 			it = std::min_element(cumulative_rotated[row - 1].begin(), cumulative_rotated[row - 1].end());
 			position[row - 1] = std::distance(std::begin(cumulative_rotated[row - 1]), it);
 		}
@@ -338,40 +281,24 @@ void SeamCarving::find_horizontal_seams() {
 			position[row - 1] = std::distance(std::begin(cumulative_rotated[row - 1]), it);
 		}
 	}
-
-	std::cout << "shortest path" << std::endl;
-	for (auto i : position) {
-		std::cout << i.first << "," << i.second << std::endl;
-	}
-	std::cout << std::endl;
 }
 
 void SeamCarving::remove_horizontal_seams(int horizontal_seams) {
 
 	while (horizontal_seams > 0) {
+
 		populate_energy_matrix();
 		populate_cumulative_horizontal();
 		rotate(0);
 		find_horizontal_seams();
 
-		for (auto i : position) {
+		for (auto i : position)
 			pixel_rotated[i.first].erase(pixel_rotated[i.first].begin() + i.second);
-			cumulative_rotated[i.first].erase(cumulative_rotated[i.first].begin() + i.second);
-		}
-
+		
+		horizontal_seams--;
 		height--;
 		rotate(1);
-		horizontal_seams--;
 	}
-
-	std::cout << "final pixel matrix" << std::endl;
-	for (int row = 0; row < height; row++) {
-		for (int column = 0; column < width; column++) {
-			std::cout << pixel_matrix[row][column] << " ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
 }
 
 void SeamCarving::write_file(std::ofstream& output) {
