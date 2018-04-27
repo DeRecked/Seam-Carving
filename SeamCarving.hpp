@@ -15,8 +15,9 @@ public:
 	void get_header(std::ifstream& image);
 	void populate_pixel_matrix(std::ifstream& image);
 	void populate_energy_matrix();
-	void populate_cumulative_matrix();
+	void populate_cumulative_vertical();
 	void find_vertical_seams();
+	void populate_cumulative_horizontal();
 	void rotate(int a);
 	void find_horizontal_seams();
 	void remove_vertical_seams(int vertical_seams);
