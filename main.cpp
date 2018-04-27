@@ -10,8 +10,8 @@ int main(int argc, char** argv) {
 			throw "Usage: PROGRAM FILENAME NUM_VERTICAL_SEAMS NUM_HORIZONTAL_SEAMS";
 		else {
 
-			if (atoi(argv[2]) <= 0 || atoi(argv[3]) <= 0)
-				throw "Number of vertical and horizontal seams must be greater than zero";
+			if (atoi(argv[2]) < 0 || atoi(argv[3]) < 0)
+				throw "Number of vertical and horizontal seams cannot be less than zero";
 
 			std::string filename = argv[1];
 			image.open(filename.c_str(), std::ios::binary);
